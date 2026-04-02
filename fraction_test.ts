@@ -143,5 +143,91 @@ Deno.test("3/2 - 1/2 = 1", () => {
 
   // Assert
   assertEquals(left.toFloat(1), 1);
-  assertEquals(left.toString(), "4/4");
+  assertEquals(left.toString(), "1/1");
+});
+
+Deno.test("cancel() simplifies 6/9 to 2/3", () => {
+  // Arrange
+  const fraction = new Fraction(6, 9);
+
+  // Act
+  const simplified = fraction.cancel();
+
+  // Assert
+  assertEquals(simplified.toString(), "2/3");
+});
+
+Deno.test("cancel() returns new Fraction (immutable)", () => {
+  // Arrange
+  const original = new Fraction(4, 6);
+
+  // Act
+  const simplified = original.cancel();
+
+  // Assert
+  assertEquals(original.toString(), "2/3");
+  assertEquals(simplified.toString(), "2/3");
+  assertEquals(original !== simplified, true);
+});
+
+Deno.test("cancel() simplifies 4/4 to 1/1", () => {
+  // Arrange
+  const fraction = new Fraction(4, 4);
+
+  // Act
+  const simplified = fraction.cancel();
+
+  // Assert
+  assertEquals(simplified.toString(), "1/1");
+});
+
+Deno.test("cancel() leaves already-simplified 1/2 unchanged", () => {
+  // Arrange
+  const fraction = new Fraction(1, 2);
+
+  // Act
+  const simplified = fraction.cancel();
+
+  // Assert
+  assertEquals(simplified.toString(), "1/2");
+});
+
+Deno.test("constructor auto-simplifies 6/9 to 2/3", () => {
+  // Arrange & Act
+  const fraction = new Fraction(6, 9);
+
+  // Assert
+  assertEquals(fraction.toString(), "2/3");
+});
+
+Deno.test("Fraction.parse() auto-simplifies 6/9", () => {
+  // Arrange & Act
+  const fraction = Fraction.parse("6/9");
+
+  // Assert
+  assertEquals(fraction.toString(), "2/3");
+});
+
+Deno.test("add() auto-simplifies result", () => {
+  // Arrange
+  const left = new Fraction(2, 6);
+  const right = new Fraction(1, 3);
+
+  // Act
+  left.add(right);
+
+  // Assert
+  assertEquals(left.toString(), "2/3");
+});
+
+Deno.test("multiply() auto-simplifies result", () => {
+  // Arrange
+  const left = new Fraction(2, 3);
+  const right = new Fraction(3, 2);
+
+  // Act
+  left.multiply(right);
+
+  // Assert
+  assertEquals(left.toString(), "1/1");
 });
